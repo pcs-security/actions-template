@@ -5,6 +5,9 @@ on:
       languages-torun:
         required: true
         type: string
+      languages2-torun:
+        required: true
+        type: string
     #secrets:
     #  envPAT:
     #    required: true
@@ -19,6 +22,7 @@ jobs:
     - name: Display Inputs 
       run: | 
         echo ${{ inputs.languages-torun}}
+        echo ${{ inputs.languages2-torun}}
         echo ${{ fromJSON(inputs.languages-torun).*.language }}
         echo ${{ toJSON(fromJSON(inputs.languages-torun).*.language) }}
   analyze:
@@ -32,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['${{ fromJSON(inputs.languages-torun).*.language }}' ]
+        language: ['${{ inputs.languages2-torun}}' ]
         #[ 'java', 'javascript' ]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
