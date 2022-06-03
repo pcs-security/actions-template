@@ -8,6 +8,9 @@ on:
       image-name:
         required: false
         type: string
+      launguage-run:
+        required: false
+        type: string
     #secrets:
     #  envPAT:
     #    required: true
@@ -23,7 +26,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'java', 'javascript' ]
+        language: ${{ toJSON(inputs.launguage-run) }}
+        #[ 'java', 'javascript' ]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
     steps:
