@@ -2,31 +2,7 @@ name: "CodeQL For Template"
 on:
   workflow_call:
     inputs:
-      cpp-torun:
-        required: false
-        type: boolean
-      csharp-torun:
-        required: false
-        type: boolean
-      go-torun:
-        required: false
-        type: boolean
-      java-torun:
-        required: false
-        type: boolean
-      javascript-torun:
-        required: false
-        type: boolean
-      python-torun:
-        required: false
-        type: boolean
-      ruby-torun:
-        required: false
-        type: boolean
       languages-torun:
-        required: true
-        type: string
-      language-torun:
         required: true
         type: string
     #secrets:
@@ -34,20 +10,21 @@ on:
     #    required: true
 
 jobs:
-  get-languages: 
-    name: Get Language
+  # incomplete! the intention is to fail when input's format is incorrect
+  # expected input format is as follows '[{"language": "java"},{ "language": "javascript"}]'
+  check-inputs: 
+    name: Check Inputs
     runs-on: ubuntu-latest
     steps:
-    - name: Display the path
+    - name: Display Inputs 
       run: | 
-        echo ${{ inputs.java-torun}}
-        echo ${{ inputs.language-torun}}
         echo ${{ inputs.languages-torun}}
-        echo ${{ fromJSON(inputs.languages-torun).*.language}}
+        echo ${{ fromJSON(inputs.languages-torun).*.language }}
+        echo ${{ toJSON(fromJSON(inputs.languages-torun).*.language) }}
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
-    needs: get-languages
+    needs: check-inputs
     permissions:
       actions: read
       contents: read
