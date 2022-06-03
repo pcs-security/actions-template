@@ -8,7 +8,7 @@ on:
       image-name:
         required: false
         type: string
-      launguage-run:
+      language-torun:
         required: false
         type: string
     #secrets:
@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ ${{ inputs.launguage-run) }} ]
+        language: [ ${{ inputs.language-torun) }} ]
         #[ 'java', 'javascript' ]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
