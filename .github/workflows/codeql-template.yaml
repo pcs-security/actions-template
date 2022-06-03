@@ -24,7 +24,7 @@ jobs:
         echo ${{ inputs.languages-torun}}
         echo ${{ inputs.languages2-torun}}
         echo ${{ fromJSON(inputs.languages-torun).*.language }}
-        echo ${{ toJSON(fromJSON(inputs.languages-torun).*.language) }}
+  #echo ${{ toJSON(fromJSON(inputs.languages-torun).*.language) }}
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
