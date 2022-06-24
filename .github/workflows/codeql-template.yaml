@@ -43,11 +43,10 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         queries: security-extended,security-and-quality
-    
     - if: matrix.language == 'cpp' || matrix.language == 'csharp' 
-      name: Autobuild
+      name: Autobuild for C# and C++
       uses: github/codeql-action/autobuild@v2    
-    - name: set up JDK 17
+    - name: Set up JDK 17 Java Build
       if: matrix.language == 'java' 
       uses: actions/setup-java@v3
       with:
