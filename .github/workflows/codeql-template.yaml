@@ -19,7 +19,6 @@ jobs:
     - name: Display Inputs 
       run: | 
         echo ${{ inputs.languages-torun}}
-        echo ${{ inputs.languages2-torun}}
         echo ${{ fromJSON(inputs.languages-torun).*.language }}
   analyze:
     name: Analyze
