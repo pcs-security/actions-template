@@ -8,6 +8,9 @@ on:
       image-name:
         required: true
         type: string
+      continue:
+        required: true
+        type: boolean
     #secrets:
     #  envPAT:
     #    required: true
@@ -15,6 +18,7 @@ on:
 jobs:
   java-build:
     runs-on: ubuntu-latest
+    continue-on-error: ${{ inputs.continue }}
     name: "Branch build"
     steps:
         - uses: actions/checkout@v3
