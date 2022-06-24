@@ -5,10 +5,14 @@ on:
       fail-severity:
         required: true
         type: string
+      continue:
+        required: true
+        type: boolean
 
 jobs:
   dependency-review:
     runs-on: ubuntu-latest
+    continue-on-error: ${{ inputs.continue }}
     steps:
       - name: 'Checkout Repository'
         uses: actions/checkout@v3
