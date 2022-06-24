@@ -8,10 +8,13 @@ on:
       continue:
         required: true
         type: boolean
+      label:
+        required: true
+        type: string
 
 jobs:
   dependency-review:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.label}} 
     continue-on-error: ${{ inputs.continue }}
     steps:
       - name: 'Checkout Repository'

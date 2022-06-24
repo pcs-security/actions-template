@@ -8,13 +8,16 @@ on:
       image-name:
         required: true
         type: string
+      label:
+        required: true
+        type: string
     #secrets:
     #  envPAT:
     #    required: true
 
 jobs:
   java-build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.label}} 
     name: "Branch build"
     steps:
         - uses: actions/checkout@v3

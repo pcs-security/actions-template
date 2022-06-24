@@ -5,16 +5,19 @@ on:
       languages-torun:
         required: true
         type: string
+      label:
+        required: true
+        type: string
     #secrets:
     #  envPAT:
     #    required: true
 
-jobs:
+jobs:      
   # incomplete! the intention is to fail when input's format is incorrect
   # expected input format is as follows '[{"language": "java"},{ "language": "javascript"}]'
   check-inputs: 
     name: Check Inputs
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.label}} 
     steps:
     - name: Display Inputs 
       run: | 
@@ -22,7 +25,7 @@ jobs:
         echo ${{ fromJSON(inputs.languages-torun).*.language }}
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.label}} 
     needs: check-inputs
     permissions:
       actions: read
