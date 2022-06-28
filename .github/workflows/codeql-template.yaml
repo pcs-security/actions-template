@@ -56,9 +56,9 @@ jobs:
         distribution: 'temurin'
         java-version: 17
         architecture: x64
+        cache: 'maven'
     - run: | 
         java version
-        java -cp java HelloWorldApp
         mvn version
     #- name: Cache Maven packages
     #  uses: actions/cache@v3.0.2
