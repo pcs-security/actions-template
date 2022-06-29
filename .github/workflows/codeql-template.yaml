@@ -25,10 +25,6 @@ jobs:
     - name: Display Inputs 
       run: | 
         echo ${{ inputs.self-hosted}}
-        echo ${{ inputs.self-hosted == 'true' }}
-        echo ${{ inputs.self-hosted == true }}
-        echo ${{ inputs.self-hosted == 'false' }}
-        echo ${{ inputs.self-hosted == false }}
         echo ${{ inputs.label}}
         echo ${{ inputs.languages-torun}}
         echo ${{ fromJSON(inputs.languages-torun).*.language }}
@@ -55,14 +51,9 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         queries: security-extended,security-and-quality
-    - if: matrix.language == 'cpp' || matrix.language == 'csharp' 
+    - if: ${{ matrix.language == 'cpp' || matrix.language == 'csharp' }}
       name: Autobuild for C# and C++
       uses: github/codeql-action/autobuild@v2    
-    - name: test4
-      if: ${{ matrix.language == 'java' && inputs.self-hosted == true }}
-      run: | 
-        echo test4
-        echo ${{ matrix.language == 'java' && inputs.self-hosted == true }}
     - name: Set up Maven
       if: ${{ matrix.language == 'java' && inputs.self-hosted == true }}
       uses: stCarolas/setup-maven@v4.4
