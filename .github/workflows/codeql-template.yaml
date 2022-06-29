@@ -59,7 +59,7 @@ jobs:
       name: Autobuild for C# and C++
       uses: github/codeql-action/autobuild@v2    
     - name: Set up Maven
-      if: matrix.language == 'java' && ${{ inputs.self-hosted == 'true' }} 
+      if: matrix.language == 'java' && ${{ inputs.self-hosted == true }}
       uses: stCarolas/setup-maven@v4.4
       with:
         maven-version: 3.8.2
