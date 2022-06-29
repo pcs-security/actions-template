@@ -32,7 +32,7 @@ jobs:
         echo ${{ inputs.continue-on-err}}
   dependency-review:
     runs-on: ${{ inputs.label}} 
-    continue-on-error:  ${{ inputs.continue-on-err == true }}
+    continue-on-error: ${{ inputs.continue-on-err }} == 'true'
     steps:
       - name: 'Checkout Repository'
         uses: actions/checkout@v3
