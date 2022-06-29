@@ -58,6 +58,16 @@ jobs:
     - if: matrix.language == 'cpp' || matrix.language == 'csharp' 
       name: Autobuild for C# and C++
       uses: github/codeql-action/autobuild@v2    
+    - name: test1
+      if: ${{ matrix.language == 'java' }}
+      run: | 
+        echo test1
+        echo ${{ matrix.language == 'java' }}
+    - name: test2
+      if: ${{ inputs.self-hosted == true }}
+      run: | 
+        echo test2
+        echo ${{ inputs.self-hosted == true }}
     - name: Set up Maven
       if: matrix.language == 'java' && ${{ inputs.self-hosted == true }}
       uses: stCarolas/setup-maven@v4.4
