@@ -2,15 +2,15 @@ name: "CodeQL For Template"
 on:
   workflow_call:
     inputs:
-      languages-torun:
-        required: true
-        type: string
-      label:
-        required: true
-        type: string
       self-hosted:
         required: true
         type: boolean
+      label:
+        required: true
+        type: string
+      languages-torun:
+        required: true
+        type: string
     #secrets:
     #  envPAT:
     #    required: true
@@ -24,6 +24,8 @@ jobs:
     steps:
     - name: Display Inputs 
       run: | 
+        echo ${{ inputs.self-hosted}}
+        echo ${{ inputs.label}}
         echo ${{ inputs.languages-torun}}
         echo ${{ fromJSON(inputs.languages-torun).*.language }}
   analyze:
