@@ -5,7 +5,7 @@ on:
       self-hosted:
         required: true
         type: boolean
-      label:
+      runner-labels:
         required: true
         type: string
       languages-torun:
@@ -17,20 +17,22 @@ on:
 
 jobs:      
   # incomplete! the intention is to fail when input's format is incorrect
-  # expected input format is as follows '[{"language": "java"},{ "language": "javascript"}]'
+  # languages-torun: expected input format e.g. '[{"language": "java"},{ "language": "javascript"}]'
+  # runner-labels: expected input format e.g. '[{"label": "docker"},{ "label": "self-hosted"}]'
   check-inputs: 
     name: Check Inputs
-    runs-on: ${{ inputs.label}} 
+    runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
     steps:
     - name: Display Inputs 
       run: | 
         echo ${{ inputs.self-hosted}}
-        echo ${{ inputs.label}}
+        echo ${{ inputs.runner-labels}}
+        echo ${{ fromJSON(inputs.runner-labels).*.label }}
         echo ${{ inputs.languages-torun}}
         echo ${{ fromJSON(inputs.languages-torun).*.language }}
   analyze:
     name: Analyze
-    runs-on: ${{ inputs.label}} 
+    runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
     needs: check-inputs
     permissions:
       actions: read
