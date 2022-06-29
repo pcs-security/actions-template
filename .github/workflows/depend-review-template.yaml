@@ -2,20 +2,37 @@ name: "Build For Template"
 on:
   workflow_call:
     inputs:
-      fail-severity:
-        required: true
-        type: string
-      continue:
+      self-hosted:
         required: true
         type: boolean
       label:
         required: true
         type: string
-
+      language:
+        required: true
+        type: string
+      fail-severity:
+        required: true
+        type: string
+      continue-on-err:
+        required: true
+        type: boolean
+        default: false
 jobs:
+  check-inputs: 
+    name: Check Inputs
+    runs-on: ${{ inputs.label}} 
+    steps:
+    - name: Display Inputs 
+      run: | 
+        echo ${{ inputs.self-hosted}}
+        echo ${{ inputs.label}}
+        echo ${{ inputs.language}}
+        echo ${{ inputs.fail-severity}}
+        echo ${{ inputs.continue-on-err}}
   dependency-review:
     runs-on: ${{ inputs.label}} 
-    continue-on-error: ${{ inputs.continue }}
+    continue-on-error:  ${{ inputs.continue-on-err == true }}
     steps:
       - name: 'Checkout Repository'
         uses: actions/checkout@v3
