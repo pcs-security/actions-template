@@ -5,7 +5,7 @@ on:
       self-hosted:
         required: true
         type: boolean
-      label:
+      runner-labels:
         required: true
         type: string
       language:
@@ -21,17 +21,19 @@ on:
 jobs:
   check-inputs: 
     name: Check Inputs
-    runs-on: ${{ inputs.label}} 
+    runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
     steps:
     - name: Display Inputs 
       run: | 
         echo ${{ inputs.self-hosted}}
-        echo ${{ inputs.label}}
+        echo ${{ inputs.runner-labels}}
+        echo ${{ fromJSON(inputs.runner-labels).*.label }}
         echo ${{ inputs.language}}
         echo ${{ inputs.fail-severity}}
         echo ${{ inputs.continue-on-err}}
   dependency-review:
-    runs-on: ${{ inputs.label}} 
+    runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
+    needs: check-inputs
     continue-on-error: ${{ inputs.continue-on-err == true }}
     steps:
       - name: 'Checkout Repository'
