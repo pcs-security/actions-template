@@ -11,6 +11,9 @@ on:
       languages-torun:
         required: true
         type: string
+      language:
+        required: false
+        type: string
     #secrets:
     #  envPAT:
     #    required: true
@@ -30,6 +33,7 @@ jobs:
         echo ${{ fromJSON(inputs.runner-labels).*.label }}
         echo ${{ inputs.languages-torun}}
         echo ${{ fromJSON(inputs.languages-torun).*.language }}
+        echo ${{ inputs.language}}
   analyze:
     name: Analyze
     runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
@@ -68,6 +72,11 @@ jobs:
         distribution: 'temurin'
         java-version: 17
         architecture: x64
+    - name: Set up Node.js Hard code 12.x
+      if: ${{ inputs.language == 'node' && matrix.language == 'javascript' && inputs.self-hosted == true }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'  
     - name: Manual Build with Maven
       if: matrix.language == 'java' 
       run: | 
