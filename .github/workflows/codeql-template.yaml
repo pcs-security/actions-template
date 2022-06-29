@@ -68,6 +68,16 @@ jobs:
       run: | 
         echo test2
         echo ${{ inputs.self-hosted == true }}
+    - name: test3
+      if: matrix.language == 'java' && ${{ inputs.self-hosted == true }}
+      run: | 
+        echo test3
+        echo matrix.language == 'java' && ${{ inputs.self-hosted == true }}
+    - name: test4
+      if: ${{ matrix.language == 'java' && inputs.self-hosted == true }}
+      run: | 
+        echo test4
+        echo ${{ matrix.language == 'java' && inputs.self-hosted == true }}
     - name: Set up Maven
       if: matrix.language == 'java' && ${{ inputs.self-hosted == true }}
       uses: stCarolas/setup-maven@v4.4
