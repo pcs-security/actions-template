@@ -2,26 +2,37 @@ name: "Build For Template"
 on:
   workflow_call:
     inputs:
-      working-repo:
+      self-hosted:
         required: true
-        type: string
-      image-name:
-        required: true
-        type: string
+        type: boolean
       label:
         required: true
         type: string
       language:
         required: true
         type: string
-      self-hosted:
+      working-repo:
         required: true
-        type: boolean
+        type: string
+      image-name:
+        required: true
+        type: string
     #secrets:
     #  envPAT:
     #    required: true
 
 jobs:
+  check-inputs: 
+    name: Check Inputs
+    runs-on: ${{ inputs.label}} 
+    steps:
+    - name: Display Inputs 
+      run: | 
+        echo ${{ inputs.self-hosted}}
+        echo ${{ inputs.label}}
+        echo ${{ inputs.language}}
+        echo ${{ inputs.working-repo}}
+        echo ${{ inputs.image-name}}
   java-build:
     runs-on: ${{ inputs.label}} 
     name: "Branch build"
