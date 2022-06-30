@@ -11,9 +11,6 @@ on:
       language:
         required: true
         type: string
-      working-repo:
-        required: true
-        type: string
       image-name:
         required: true
         type: string
@@ -42,7 +39,6 @@ jobs:
         echo ${{ inputs.runner-labels}}
         echo ${{ fromJSON(inputs.runner-labels).*.label }}
         echo ${{ inputs.language}}
-        echo ${{ inputs.working-repo}}
         echo ${{ inputs.image-name}}
         echo --------------ENV-SECRETS
         echo ${{ secrets.reg_name }}
