@@ -28,7 +28,6 @@ on:
       registry-password:
         required: true
         type: string
-        default: ${{ secrets.GITHUB_TOKEN }}  
     secrets: 
       registry-name:
         required: true
