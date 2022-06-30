@@ -73,13 +73,13 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
-          registry: ${{ inputs.registry-name }} # Using Github container repository
-          username: ${{ inputs.registry-username }}
-          password: ${{ inputs.registry-password }}
+          registry: ${{ secrets.registry-name }} # Using Github container repository
+          username: ${{ secrets.registry-username }}
+          password: ${{ secrets.registry-password }}
       - name: Build and push Docker image for server
         uses: docker/build-push-action@v2
         with:
           context: './'
           push: true
-          tags: ${{ inputs.registry-name }}/${{ inputs.working-repo }}/${{ inputs.image-name }}:0.0.${{ github.run_number }}
+          tags: ${{ secrets.registry-name }}/${{ inputs.working-repo }}/${{ inputs.image-name }}:0.0.${{ github.run_number }}
             #labels: ${{ steps.meta.outputs.labels }}
