@@ -17,6 +17,18 @@ on:
       image-name:
         required: true
         type: string
+      registry-name:
+        required: true
+        type: string
+        default: 'ghcr.io'
+      registry-username:
+        required: true
+        type: string
+        default: ${{ github.actor }}
+      registry-password:
+        required: true
+        type: string
+        default: ${{ secrets.GITHUB_TOKEN }}  
     secrets: 
       registry-name:
         required: true
@@ -70,6 +82,12 @@ jobs:
       - name: Set up Docker Buildx
         if: ${{ inputs.self-hosted == true }}
         uses: docker/setup-buildx-action@v2
+      - name: Log in to the Container registry (inputs)
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ inputs.registry-name }} # Using Github container repository
+          username: ${{ inputs.registry-username }}
+          password: ${{ inputs.registry-password }}
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
