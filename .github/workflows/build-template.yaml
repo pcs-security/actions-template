@@ -21,15 +21,11 @@ on:
         required: true
         type: string
         default: 'ghcr.io'
+    secrets:      
       registry-username:
         required: true
-        type: string
-        default: ${{ github.actor }}
       registry-password:
         required: true
-        type: string
-        default: ${{ secrets.GITHUB_TOKEN }}  
-    #secrets:
     #  envPAT:
     #    required: true
 
