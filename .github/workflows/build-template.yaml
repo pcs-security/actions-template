@@ -36,6 +36,12 @@ on:
         required: true
       registry-password:
         required: true
+      ACR_PASSWORD:
+        required: true
+      ACR_REG_NAME:
+        required: true
+      ACR_USERNAME:
+        required: true
     #  envPAT:
     #    required: true
 
@@ -82,13 +88,18 @@ jobs:
       #  run: mvn --no-transfer-progress verify
       - name: printprint
         run: | 
+          echo --------------INPUTS
           echo ${{ inputs.registry-name }}
           echo ${{ inputs.registry-username }}
           echo ${{ inputs.registry-password }}
-          echo --------------
+          echo --------------SECRETS
           echo ${{ secrets.registry-name }}
           echo ${{ secrets.registry-username }}
           echo ${{ secrets.registry-password }}
+          echo --------------ENV-SECRETS
+          echo ${{ secrets.ACR_PASSWORD }}
+          echo ${{ secrets.ACR_REG_NAME }}
+          echo ${{ secrets.ACR_USERNAME }}
       - name: Set up Docker Buildx
         if: ${{ inputs.self-hosted == true }}
         uses: docker/setup-buildx-action@v2
