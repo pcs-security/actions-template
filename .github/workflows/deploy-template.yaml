@@ -33,8 +33,8 @@ on:
       kube_config:
         required: true
 jobs:
-  check-inputs-create-file: 
-    name: Check Inputs & Create File
+  perform-deployment: 
+    name: Perform Deployment
     runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
     environment: ${{ inputs.environment-name }} 
     outputs:
@@ -72,14 +72,6 @@ jobs:
         git commit -m "New Deployment file"
         git push
         echo "::set-output name=filename::deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml"
-  deploy:
-    name: Deploy into target env
-    runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
-    environment: ${{ inputs.environment-name }} 
-    needs: check-inputs-create-file
-    steps: 
-    - name: Checkout repository
-      uses: actions/checkout@v3
     - name: Set Kubectl cli
       uses: azure/setup-kubectl@v2.0
     - uses: Azure/k8s-set-context@v2
@@ -88,13 +80,13 @@ jobs:
     - name: test 
       run: | 
         pwd
-        ls 
-        ls deployments
+        ls /runner/_work/java-goat/java-goat
+        ls /runner/_work/java-goat/java-goat/deployments
     # Deploy app to AKS
     - uses: azure/k8s-deploy@v1
       with:
         manifests: |
-          ${{ github.workspace }}/deployments/${{needs.check-inputs-create-file.outputs.output1}}
+          ${{ github.workspace }}/deployments/${{steps.create-file.outputs.filename}}
         images: |
           ${{ secrets.reg_name }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
         #imagepullsecrets: |
