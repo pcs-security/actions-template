@@ -37,7 +37,9 @@ jobs:
           node-version: '12.x'  
       - name: Test with NPM
         if: ${{ inputs.language == 'node' }}
-        run: npm test
+        run: |
+          npm install
+          npm test
       - name: Set up Maven
         if: ${{ inputs.language == 'java' && inputs.self-hosted == true }}
         uses: stCarolas/setup-maven@v4.4
