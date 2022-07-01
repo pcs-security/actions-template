@@ -88,7 +88,8 @@ jobs:
     - name: test 
       run: | 
         echo pwd
-        cd ls deployments
+        ls 
+        ls deployments
     # Deploy app to AKS
     - uses: azure/k8s-deploy@v1
       with:
