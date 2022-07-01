@@ -87,7 +87,7 @@ jobs:
         kubeconfig: ${{ secrets.kube_config }}
     - name: test 
       run: | 
-        echo pwd
+        pwd
         ls 
         ls deployments
     # Deploy app to AKS
