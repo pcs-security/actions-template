@@ -1,0 +1,56 @@
+name: "Unit Test For Template"
+on:
+  workflow_call:
+    inputs:
+      self-hosted:
+        required: true
+        type: boolean
+      runner-labels:
+        required: true
+        type: string
+      language:
+        required: true
+        type: string
+jobs:
+  check-inputs: 
+    name: Check Inputs
+    runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
+    steps:
+    - name: Display Inputs 
+      run: | 
+        echo ${{ inputs.self-hosted}}
+        echo ${{ inputs.runner-labels}}
+        echo ${{ fromJSON(inputs.runner-labels).*.label }}
+        echo ${{ inputs.language}}
+        echo ${{ inputs.image-name}}
+  unit-test:
+    runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
+    name: "Unit Test"
+    needs: check-inputs
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Node.js 12.x
+        if: ${{ inputs.language == 'node' }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'  
+      - name: Test with NPM
+        if: ${{ inputs.language == 'node' }}
+        run: npm test
+      - name: Set up Maven
+        if: ${{ inputs.language == 'java' && inputs.self-hosted == true }}
+        uses: stCarolas/setup-maven@v4.4
+        with:
+          maven-version: 3.8.2
+      - name: Set up JDK 17
+        if: ${{ inputs.language == 'java' }}
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          architecture: x64
+      - name: Test with Maven
+        if: ${{ inputs.language == 'java' }}
+        run: mvn --no-transfer-progress verify
+        
