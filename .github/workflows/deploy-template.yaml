@@ -28,8 +28,8 @@ on:
         required: true
       reg_password:
         required: true
-      reg_secret:
-        required: true
+      #reg_secret:
+      #  required: true
       kube_config:
         required: true
 jobs:
