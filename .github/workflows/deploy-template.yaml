@@ -37,6 +37,8 @@ jobs:
     name: Check Inputs & Create File
     runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
     environment: ${{ inputs.environment-name }} 
+    outputs:
+      output1: ${{ steps.create-file.outputs.filename }}
     steps:
     - name: Display Inputs 
       run: | 
@@ -53,7 +55,8 @@ jobs:
         echo ${{ secrets.reg_password }}
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Create Deployment File
+    - id: create-file
+      name: Create Deployment File
       run: | 
         echo ${GITHUB_REF#refs/heads/}
         cd deployments
@@ -68,6 +71,7 @@ jobs:
         git add deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml
         git commit -m "New Deployment file"
         git push
+        echo "::set-output name=filename::deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml"
   deploy:
     name: Deploy into target env
     runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
@@ -83,7 +87,7 @@ jobs:
     - uses: azure/k8s-deploy@v1
       with:
         manifests: |
-          ${{ github.workspace }}/deployments/deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml
+          ${{ github.workspace }}/deployments/${{needs.check-inputs-create-file.outputs.output1}}
         images: |
           ${{ secrets.reg_name }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
         #imagepullsecrets: |
