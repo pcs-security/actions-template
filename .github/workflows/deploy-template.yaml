@@ -73,6 +73,7 @@ jobs:
     name: Deploy into target env
     runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
     environment: ${{ inputs.environment-name }} 
+    needs: check-inputs-create-file
     steps: 
     - name: Set Kubectl cli
       uses: azure/setup-kubectl@v2.0
