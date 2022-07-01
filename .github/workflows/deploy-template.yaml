@@ -85,6 +85,10 @@ jobs:
     - uses: Azure/k8s-set-context@v2
       with:
         kubeconfig: ${{ secrets.kube_config }}
+    - name: test 
+      run: | 
+        echo pwd
+        cd ls deployments
     # Deploy app to AKS
     - uses: azure/k8s-deploy@v1
       with:
