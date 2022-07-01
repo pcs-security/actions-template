@@ -28,8 +28,8 @@ on:
         required: true
       reg_password:
         required: true
-      #reg_secret:
-      #  required: true
+      reg_secret:
+        required: true
       kube_config:
         required: true
 jobs:
@@ -89,6 +89,6 @@ jobs:
           ${{ github.workspace }}/deployments/${{steps.create-file.outputs.filename}}
         images: |
           ${{ secrets.reg_name }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
-        #imagepullsecrets: |
-        #  ${{ secrets.reg_secret }}
+        imagepullsecrets: |
+          ${{ secrets.reg_secret }}
         namespace: ${{ inputs.namespace }}
