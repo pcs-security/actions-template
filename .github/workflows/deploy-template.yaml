@@ -77,11 +77,6 @@ jobs:
     - uses: Azure/k8s-set-context@v2
       with:
         kubeconfig: ${{ secrets.kube_config }}
-    - name: test 
-      run: | 
-        pwd
-        ls /runner/_work/java-goat/java-goat
-        ls /runner/_work/java-goat/java-goat/deployments
     # Deploy app to AKS
     - uses: azure/k8s-deploy@v1
       with:
@@ -92,3 +87,4 @@ jobs:
         imagepullsecrets: |
           ${{ secrets.reg_secret }}
         namespace: ${{ inputs.namespace }}
+        force: true
