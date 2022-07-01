@@ -84,7 +84,7 @@ jobs:
           ${{ github.workspace }}/deployments/${{steps.create-file.outputs.filename}}
         images: |
           ${{ secrets.reg_name }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
-        imagepullsecrets: |
-          ${{ secrets.reg_secret }}
+        #imagepullsecrets: |
+        #  ${{ secrets.reg_secret }}
         namespace: ${{ inputs.namespace }}
         force: true
