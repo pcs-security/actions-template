@@ -18,6 +18,10 @@ on:
         required: true
         type: string
         default: 'AZURE_ENV'
+    outputs:
+      image-and-tag:
+        description: "This contains the image with the tag when performing the build"
+        value: ${{ jobs.docker-build.outputs.image-and-tag }}
     secrets: 
       reg_name:
         required: true
@@ -49,6 +53,8 @@ jobs:
     name: "Docker Build"
     needs: check-inputs
     environment: ${{ inputs.environment-name }} 
+    outputs:
+      image-and-tag: ${{ steps.get-image-name.outputs.imagename }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
