@@ -56,10 +56,20 @@ jobs:
       uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
-        queries: security-extended,security-and-quality
+        queries: security-extended,security-and-quality    
+    - name: Set up .NET 5
+      if: ${{ inputs.language == 'csharp' && inputs.self-hosted == true }}
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.100
     - if: ${{ matrix.language == 'cpp' || matrix.language == 'csharp' }}
       name: Autobuild for C# and C++
-      uses: github/codeql-action/autobuild@v2    
+      uses: github/codeql-action/autobuild@v2  
+    - name: Set up Node.js Hard code 12.x
+      if: ${{ inputs.language == 'node' && matrix.language == 'javascript' && inputs.self-hosted == true }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'    
     - name: Set up Maven
       if: ${{ matrix.language == 'java' && inputs.self-hosted == true }}
       uses: stCarolas/setup-maven@v4.4
@@ -72,11 +82,6 @@ jobs:
         distribution: 'temurin'
         java-version: 17
         architecture: x64
-    - name: Set up Node.js Hard code 12.x
-      if: ${{ inputs.language == 'node' && matrix.language == 'javascript' && inputs.self-hosted == true }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: '12.x'  
     - name: Manual Build with Maven
       if: matrix.language == 'java' 
       run: | 
