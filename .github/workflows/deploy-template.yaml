@@ -8,12 +8,15 @@ on:
       runner-labels:
         required: true
         type: string
-      image-name:
+      full-image-path:
         required: true
         type: string
-      image-tag:
-        required: true
-        type: string
+      #image-name:
+      #  required: true
+      #  type: string
+      #image-tag:
+      #  required: true
+      #  type: string
       environment-name:
         required: true
         type: string
@@ -45,8 +48,9 @@ jobs:
         echo ${{ inputs.self-hosted}}
         echo ${{ inputs.runner-labels}}
         echo ${{ fromJSON(inputs.runner-labels).*.label }}
-        echo ${{ inputs.image-name}}
-        echo ${{ inputs.image-tag}}
+        echo ${{ inputs.full-image-path}}
+        #echo ${{ inputs.image-name}}
+        #echo ${{ inputs.image-tag}}
         echo ${{ inputs.environment-name}}
         echo ${{ inputs.namespace}}
         echo --------------ENV-SECRETS
@@ -83,7 +87,8 @@ jobs:
         manifests: |
           ${{ github.workspace }}/deployments/${{steps.create-file.outputs.filename}}
         images: |
-          ${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:${{ inputs.image-tag }}
+          ${{ inputs.full-image-path }}
+          #${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:${{ inputs.image-tag }}
         #imagepullsecrets: |
         #  ${{ secrets.reg_secret }}
         namespace: ${{ inputs.namespace }}
