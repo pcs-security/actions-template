@@ -31,7 +31,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Set up Node.js 12.x
-        if: ${{ inputs.language == 'node' }}
+        if: ${{ inputs.language == 'node' && inputs.self-hosted == true }}
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'  
@@ -40,6 +40,16 @@ jobs:
         run: |
           npm install
           npm test
+      - name: Set up .NET 5
+        if: ${{ inputs.language == 'csharp' && inputs.self-hosted == true }}
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100
+      - name: Test with .NET
+        if: ${{ inputs.language == 'csharp' }}
+        run: |
+          dotnet restore
+          dotnet test
       - name: Set up Maven
         if: ${{ inputs.language == 'java' && inputs.self-hosted == true }}
         uses: stCarolas/setup-maven@v4.4
