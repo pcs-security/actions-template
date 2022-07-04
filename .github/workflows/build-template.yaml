@@ -54,7 +54,7 @@ jobs:
     needs: check-inputs
     environment: ${{ inputs.environment-name }} 
     outputs:
-      full-image-path: ${{ steps.get-image-name.outputs.full-image-path }}
+      full-image-path: ${{ steps.get-image-name.outputs.fullimagepath }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -96,11 +96,11 @@ jobs:
         id: get-image-name
         run: | 
           echo ${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:0.0.${{ github.run_number }}
-          echo "::set-output name=full-image-path::${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:0.0.${{ github.run_number }}"
+          echo "::set-output name=fullimagepath::${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:0.0.${{ github.run_number }}"
       - name: Build and push Docker image for server
         uses: docker/build-push-action@v2
         with:
           context: './'
           push: true
-          tags: ${{steps.get-image-name.outputs.full-image-path}}
+          tags: ${{steps.get-image-name.outputs.fullimagepath}}
             #labels: ${{ steps.meta.outputs.labels }}
