@@ -24,10 +24,10 @@ on:
         value: ${{ jobs.docker-build.outputs.fullimagepath }}
       test1:
         description: "This contains the image with the tag when performing the build"
-        value: ${{ jobs.docker-build.outputs.test }}
+        value: ${{ jobs.docker-build.outputs.test1 }}
       test2:
         description: "This contains the image with the tag when performing the build"
-        value: ${{ jobs.docker-build.outputs.test }}
+        value: ${{ jobs.docker-build.outputs.test2 }}
     secrets: 
       reg_name:
         required: true
@@ -103,10 +103,15 @@ jobs:
       - name: Create image name
         id: get-image-name
         run: | 
+          echo "::set-output name=test2::justsometest }}"
           echo ${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:0.0.${{ github.run_number }}
           echo "::set-output name=fullimagepath::${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:0.0.${{ github.run_number }}"
           echo "::set-output name=test1::${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:0.0.${{ github.run_number }}"
-          echo "::set-output name=test2::justsometest }}"
+      - name: test run
+        run: | 
+          echo ${{steps.get-image-name.outputs.test1}}
+          echo ${{steps.get-image-name.outputs.test2}}
+          echo ${{steps.get-image-name.outputs.fullimagepath}}
       - name: Build and push Docker image for server
         uses: docker/build-push-action@v2
         with:
