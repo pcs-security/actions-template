@@ -66,9 +66,10 @@ jobs:
         cd deployments
         cp deploy.yml deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml
         sed -i.bak 's/<namespace>/${{ inputs.namespace }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
-        sed -i.bak 's/<registry>/${{ secrets.reg_name }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
-        sed -i.bak 's/<image-name>/${{ inputs.image-name }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
-        sed -i.bak 's/<image-tag>/${{ inputs.image-tag }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
+        sed -i.bak 's/<full-image-path>/${{ inputs.full-image-path }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
+        #sed -i.bak 's/<registry>/${{ secrets.reg_name }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
+        #sed -i.bak 's/<image-name>/${{ inputs.image-name }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
+        #sed -i.bak 's/<image-tag>/${{ inputs.image-tag }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
         cat deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml
         git config --global user.name "github-actions[bot]"
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
