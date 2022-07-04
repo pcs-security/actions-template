@@ -8,7 +8,7 @@ on:
       runner-labels:
         required: true
         type: string
-      full-image-path:
+      image-and-tag:
         required: true
         type: string
       #image-name:
@@ -48,7 +48,7 @@ jobs:
         echo ${{ inputs.self-hosted}}
         echo ${{ inputs.runner-labels}}
         echo ${{ fromJSON(inputs.runner-labels).*.label }}
-        echo ${{ inputs.full-image-path}}
+        echo ${{ inputs.image-and-tag}}
         #echo ${{ inputs.image-name}}
         #echo ${{ inputs.image-tag}}
         echo ${{ inputs.environment-name}}
@@ -66,8 +66,8 @@ jobs:
         cd deployments
         cp deploy.yml deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml
         sed -i.bak 's/<namespace>/${{ inputs.namespace }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
-        sed -i.bak 's/<full-image-path>/${{ inputs.full-image-path }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
-        #sed -i.bak 's/<registry>/${{ secrets.reg_name }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
+        sed -i.bak 's/<registry>/${{ secrets.reg_name }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
+        sed -i.bak 's/<image-and-tag>/${{ inputs.image-and-tag }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
         #sed -i.bak 's/<image-name>/${{ inputs.image-name }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
         #sed -i.bak 's/<image-tag>/${{ inputs.image-tag }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
         cat deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml
@@ -88,7 +88,7 @@ jobs:
         manifests: |
           ${{ github.workspace }}/deployments/${{steps.create-file.outputs.filename}}
         images: |
-          ${{ inputs.full-image-path }}
+          ${{ secrets.reg_name }}/${{ inputs.image-and-tag }}
           #${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:${{ inputs.image-tag }}
         #imagepullsecrets: |
         #  ${{ secrets.reg_secret }}
