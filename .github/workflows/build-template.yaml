@@ -11,13 +11,20 @@ on:
       language:
         required: true
         type: string
-      working-repo:
-        required: true
-        type: string
       image-name:
         required: true
         type: string
-    #secrets:
+      environment-name:
+        required: true
+        type: string
+        default: 'AZURE_ENV'
+    secrets: 
+      reg_name:
+        required: true
+      reg_username:
+        required: true
+      reg_password:
+        required: true
     #  envPAT:
     #    required: true
 
@@ -32,20 +39,29 @@ jobs:
         echo ${{ inputs.runner-labels}}
         echo ${{ fromJSON(inputs.runner-labels).*.label }}
         echo ${{ inputs.language}}
-        echo ${{ inputs.working-repo}}
         echo ${{ inputs.image-name}}
+        echo --------------ENV-SECRETS
+        echo ${{ secrets.reg_name }}
+        echo ${{ secrets.reg_username }}
+        echo ${{ secrets.reg_password }}
   docker-build:
     runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
     name: "Docker Build"
     needs: check-inputs
+    environment: ${{ inputs.environment-name }} 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Set up Node.js Hard code 12.x
+      - name: Set up Node.js 12.x
         if: ${{ inputs.language == 'node' }}
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'  
+      - name: Set up .NET 5
+        if: ${{ inputs.language == 'csharp' }}
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100
       - name: Set up Maven
         if: ${{ inputs.language == 'java' && inputs.self-hosted == true }}
         uses: stCarolas/setup-maven@v4.4
@@ -58,22 +74,27 @@ jobs:
           distribution: 'temurin'
           java-version: 17
           architecture: x64
-      - name: Test with Maven
-        if: ${{ inputs.language == 'java' }}
-        run: mvn --no-transfer-progress verify
+      #- name: Test with Maven
+      #  if: ${{ inputs.language == 'java' }}
+      #  run: mvn --no-transfer-progress verify
       - name: Set up Docker Buildx
         if: ${{ inputs.self-hosted == true }}
         uses: docker/setup-buildx-action@v2
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
-          registry: ghcr.io # Using Github container repository
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}  
+          registry: ${{ secrets.reg_name }} 
+          username: ${{ secrets.reg_username }}
+          password: ${{ secrets.reg_password }}
+      - name: Create image name
+        id: get-image-name
+        run: | 
+          echo ${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:0.0.${{ github.run_number }}
+          echo "::set-output name=imagename::${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:0.0.${{ github.run_number }}"
       - name: Build and push Docker image for server
         uses: docker/build-push-action@v2
         with:
           context: './'
           push: true
-          tags: ghcr.io/${{ inputs.working-repo }}/${{ inputs.image-name }}:0.0.${{ github.run_number }}
+          tags: ${{steps.get-image-name.outputs.imagename}}
             #labels: ${{ steps.meta.outputs.labels }}

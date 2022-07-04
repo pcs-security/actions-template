@@ -1,0 +1,90 @@
+name: "Deploy For Template"
+on:
+  workflow_call:
+    inputs:
+      self-hosted:
+        required: true
+        type: boolean
+      runner-labels:
+        required: true
+        type: string
+      image-name:
+        required: true
+        type: string
+      image-tag:
+        required: true
+        type: string
+      environment-name:
+        required: true
+        type: string
+        default: 'AZURE_ENV'
+      namespace:
+        required: true
+        type: string
+    secrets: 
+      reg_name:
+        required: true
+      reg_username:
+        required: true
+      reg_password:
+        required: true
+      #reg_secret:
+      #  required: true
+      kube_config:
+        required: true
+jobs:
+  perform-deployment: 
+    name: Perform Deployment
+    runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
+    environment: ${{ inputs.environment-name }} 
+    outputs:
+      output1: ${{ steps.create-file.outputs.filename }}
+    steps:
+    - name: Display Inputs 
+      run: | 
+        echo ${{ inputs.self-hosted}}
+        echo ${{ inputs.runner-labels}}
+        echo ${{ fromJSON(inputs.runner-labels).*.label }}
+        echo ${{ inputs.image-name}}
+        echo ${{ inputs.image-tag}}
+        echo ${{ inputs.environment-name}}
+        echo ${{ inputs.namespace}}
+        echo --------------ENV-SECRETS
+        echo ${{ secrets.reg_name }}
+        echo ${{ secrets.reg_username }}
+        echo ${{ secrets.reg_password }}
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - id: create-file
+      name: Create Deployment File
+      run: | 
+        echo ${GITHUB_REF#refs/heads/}
+        cd deployments
+        cp deploy.yml deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml
+        sed -i.bak 's/<namespace>/${{ inputs.namespace }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
+        sed -i.bak 's/<registry>/${{ secrets.reg_name }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
+        sed -i.bak 's/<image-name>/${{ inputs.image-name }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
+        sed -i.bak 's/<image-tag>/${{ inputs.image-tag }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
+        cat deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml
+        git commit -m "New Deployment file"
+        git push
+        echo "::set-output name=filename::deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml"
+    - name: Set Kubectl cli
+      uses: azure/setup-kubectl@v2.0
+    - uses: Azure/k8s-set-context@v2
+      with:
+        kubeconfig: ${{ secrets.kube_config }}
+    # Deploy app to AKS
+    - uses: azure/k8s-deploy@v1
+      with:
+        manifests: |
+          ${{ github.workspace }}/deployments/${{steps.create-file.outputs.filename}}
+        images: |
+          ${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:${{ inputs.image-tag }}
+        #imagepullsecrets: |
+        #  ${{ secrets.reg_secret }}
+        namespace: ${{ inputs.namespace }}
+        force: true
