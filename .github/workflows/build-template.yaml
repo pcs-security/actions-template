@@ -19,9 +19,9 @@ on:
         type: string
         default: 'AZURE_ENV'
     outputs:
-      image-and-tag:
+      full-image-path:
         description: "This contains the image with the tag when performing the build"
-        value: ${{ jobs.docker-build.outputs.image-and-tag }}
+        value: ${{ jobs.docker-build.outputs.full-image-path }}
     secrets: 
       reg_name:
         required: true
@@ -54,7 +54,7 @@ jobs:
     needs: check-inputs
     environment: ${{ inputs.environment-name }} 
     outputs:
-      image-and-tag: ${{ steps.get-image-name.outputs.imagename }}
+      full-image-path: ${{ steps.get-image-name.outputs.full-image-path }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -96,11 +96,11 @@ jobs:
         id: get-image-name
         run: | 
           echo ${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:0.0.${{ github.run_number }}
-          echo "::set-output name=imagename::${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:0.0.${{ github.run_number }}"
+          echo "::set-output name=full-image-path::${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:0.0.${{ github.run_number }}"
       - name: Build and push Docker image for server
         uses: docker/build-push-action@v2
         with:
           context: './'
           push: true
-          tags: ${{steps.get-image-name.outputs.imagename}}
+          tags: ${{steps.get-image-name.outputs.full-image-path}}
             #labels: ${{ steps.meta.outputs.labels }}
