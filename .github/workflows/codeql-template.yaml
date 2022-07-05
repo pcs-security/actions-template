@@ -61,7 +61,7 @@ jobs:
       if: ${{ matrix.language == 'csharp' && inputs.self-hosted == true }}
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.100
+        dotnet-version: 5.0.408
     - if: ${{ matrix.language == 'cpp' || matrix.language == 'csharp' }}
       name: Autobuild for C# and C++
       uses: github/codeql-action/autobuild@v2   
