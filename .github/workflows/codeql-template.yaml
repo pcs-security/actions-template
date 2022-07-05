@@ -92,7 +92,3 @@ jobs:
         mvn package
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
-      continue-on-error: true
-    - name: sleep 
-      run: 
-        sleep 5h
