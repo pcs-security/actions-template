@@ -72,18 +72,18 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.408
-      - name: Set up Maven
-        if: ${{ inputs.language == 'java' && inputs.self-hosted == true }}
-        uses: stCarolas/setup-maven@v4.4
-        with:
-          maven-version: 3.8.2
-      - name: Set up JDK 17
-        if: ${{ inputs.language == 'java' }}
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: 17
-          architecture: x64
+      #- name: Set up Maven
+      #  if: ${{ inputs.language == 'java' && inputs.self-hosted == true }}
+      #  uses: stCarolas/setup-maven@v4.4
+      #  with:
+      #    maven-version: 3.8.2
+      #- name: Set up JDK 17
+      #  if: ${{ inputs.language == 'java' }}
+      #  uses: actions/setup-java@v3
+      #  with:
+      #    distribution: 'temurin'
+      #    java-version: 17
+      #    architecture: x64
       #- name: Test with Maven
       #  if: ${{ inputs.language == 'java' }}
       #  run: mvn --no-transfer-progress verify
