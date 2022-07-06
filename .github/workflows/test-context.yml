@@ -22,11 +22,6 @@ on:
         required: true
         type: string
         default: './'
-    outputs:
-      image-and-tag:
-        description: "This contains the image with the tag when performing the build"
-        value: ${{ jobs.docker-build.outputs.image-and-tag }}
-
 jobs:
   check-inputs: 
     name: Check Inputs
@@ -39,13 +34,12 @@ jobs:
         echo ${{ fromJSON(inputs.runner-labels).*.label }}
         echo ${{ inputs.language}}
         echo ${{ inputs.image-name}}
+        echo ${{ inputs.context}}
   docker-build:
     runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
     name: "Docker Build"
     needs: check-inputs
     environment: ${{ inputs.environment-name }} 
-    outputs:
-      image-and-tag: ${{ steps.get-image-name.outputs.image-and-tag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
