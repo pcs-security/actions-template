@@ -1,0 +1,67 @@
+name: "Build For Template"
+on:
+  workflow_call:
+    inputs:
+      self-hosted:
+        required: true
+        type: boolean
+      runner-labels:
+        required: true
+        type: string
+      language:
+        required: true
+        type: string
+      image-name:
+        required: true
+        type: string
+      environment-name:
+        required: true
+        type: string
+        default: 'AZURE_ENV'
+      context:
+        required: true
+        type: string
+        default: './'
+    outputs:
+      image-and-tag:
+        description: "This contains the image with the tag when performing the build"
+        value: ${{ jobs.docker-build.outputs.image-and-tag }}
+
+jobs:
+  check-inputs: 
+    name: Check Inputs
+    runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
+    steps:
+    - name: Display Inputs 
+      run: | 
+        echo ${{ inputs.self-hosted}}
+        echo ${{ inputs.runner-labels}}
+        echo ${{ fromJSON(inputs.runner-labels).*.label }}
+        echo ${{ inputs.language}}
+        echo ${{ inputs.image-name}}
+  docker-build:
+    runs-on: [ '${{ fromJSON(inputs.runner-labels).*.label }}' ]
+    name: "Docker Build"
+    needs: check-inputs
+    environment: ${{ inputs.environment-name }} 
+    outputs:
+      image-and-tag: ${{ steps.get-image-name.outputs.image-and-tag }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: test run
+        run: | 
+          echo meimei
+          pwd
+          ls
+      - name: Build and push Docker image for server
+        uses: docker/build-push-action@v2
+        continue-on-error: true
+        with:
+          context: ${{ inputs.context }} #'.'
+          push: false
+          tags: ghcr.io/pcs-security/test-context/test:0.0.1
+            #labels: ${{ steps.meta.outputs.labels }}
+      - name: test run2
+        run: | 
+          sleep 5h
