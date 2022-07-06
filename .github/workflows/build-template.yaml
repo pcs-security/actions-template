@@ -8,9 +8,6 @@ on:
       runner-labels:
         required: true
         type: string
-      language:
-        required: true
-        type: string
       image-name:
         required: true
         type: string
@@ -21,7 +18,7 @@ on:
       context:
         required: true
         type: string
-        default: './'
+        default: '.'
     outputs:
       image-and-tag:
         description: "This contains the image with the tag when performing the build"
@@ -46,8 +43,8 @@ jobs:
         echo ${{ inputs.self-hosted}}
         echo ${{ inputs.runner-labels}}
         echo ${{ fromJSON(inputs.runner-labels).*.label }}
-        echo ${{ inputs.language}}
         echo ${{ inputs.image-name}}
+        echo ${{ inputs.context}}
         echo --------------ENV-SECRETS
         echo ${{ secrets.reg_name }}
         echo ${{ secrets.reg_username }}
@@ -62,38 +59,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      #- name: Set up Node.js 12.x
-      #  if: ${{ inputs.language == 'node' }}
-      #  uses: actions/setup-node@v1
-      #  with:
-      #    node-version: '12.x'  
-      #- name: Set up .NET 5
-      #  if: ${{ inputs.language == 'csharp' }}
-      #  uses: actions/setup-dotnet@v1
-      #  with:
-      #    dotnet-version: 5.0.408
-      #- name: Set up Maven
-      #  if: ${{ inputs.language == 'java' && inputs.self-hosted == true }}
-      #  uses: stCarolas/setup-maven@v4.4
-      #  with:
-      #    maven-version: 3.8.2
-      #- name: Set up JDK 17
-      #  if: ${{ inputs.language == 'java' }}
-      #  uses: actions/setup-java@v3
-      #  with:
-      #    distribution: 'temurin'
-      #    java-version: 17
-      #    architecture: x64
-      #- name: Test with Maven
-      #  if: ${{ inputs.language == 'java' }}
-      #  run: mvn --no-transfer-progress verify
       - name: Set up Docker Buildx
         if: ${{ inputs.self-hosted == true }}
         uses: docker/setup-buildx-action@v2
-        #uses: docker/setup-buildx-action@v1
-        #with:
-        #  version: v0.8.2
-        #  #version: v0.7.0
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
@@ -105,13 +73,13 @@ jobs:
         run: | 
           echo ${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:0.0.${{ github.run_number }}
           echo "::set-output name=image-and-tag::${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:0.0.${{ github.run_number }}"
-      - name: test run
+      - name: Print Output
         run: | 
-          echo ${{steps.get-image-name.outputs.image-and-tag}}
+          echo ${{ steps.get-image-name.outputs.image-and-tag }}
       - name: Build and push Docker image for server
         uses: docker/build-push-action@v2
         with:
-          context: ${{ inputs.context }} #'.'
+          context: ${{ inputs.context }} 
           push: true
           tags: ${{ secrets.reg_name }}/${{steps.get-image-name.outputs.image-and-tag}}
             #labels: ${{ steps.meta.outputs.labels }}
