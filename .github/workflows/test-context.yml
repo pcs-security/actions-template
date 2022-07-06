@@ -1,4 +1,4 @@
-name: "Build For Template"
+name: "Test Template"
 on:
   workflow_call:
     inputs:
