@@ -110,7 +110,7 @@ jobs:
         uses: docker/build-push-action@v2
         continue-on-error: true
         with:
-          #context: './'
+          context: './'
           push: true
           tags: ${{ secrets.reg_name }}/${{steps.get-image-name.outputs.image-and-tag}}
             #labels: ${{ steps.meta.outputs.labels }}
