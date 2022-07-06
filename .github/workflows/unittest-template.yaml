@@ -44,7 +44,7 @@ jobs:
         if: ${{ inputs.language == 'csharp' && inputs.self-hosted == true }}
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.100
+          dotnet-version: 5.0.408
       - name: Test with .NET
         if: ${{ inputs.language == 'csharp' }}
         run: |

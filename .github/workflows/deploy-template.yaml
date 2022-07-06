@@ -8,12 +8,15 @@ on:
       runner-labels:
         required: true
         type: string
-      image-name:
+      image-and-tag:
         required: true
         type: string
-      image-tag:
-        required: true
-        type: string
+      #image-name:
+      #  required: true
+      #  type: string
+      #image-tag:
+      #  required: true
+      #  type: string
       environment-name:
         required: true
         type: string
@@ -45,8 +48,9 @@ jobs:
         echo ${{ inputs.self-hosted}}
         echo ${{ inputs.runner-labels}}
         echo ${{ fromJSON(inputs.runner-labels).*.label }}
-        echo ${{ inputs.image-name}}
-        echo ${{ inputs.image-tag}}
+        echo ${{ inputs.image-and-tag}}
+        #echo ${{ inputs.image-name}}
+        #echo ${{ inputs.image-tag}}
         echo ${{ inputs.environment-name}}
         echo ${{ inputs.namespace}}
         echo --------------ENV-SECRETS
@@ -63,8 +67,9 @@ jobs:
         cp deploy.yml deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml
         sed -i.bak 's/<namespace>/${{ inputs.namespace }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
         sed -i.bak 's/<registry>/${{ secrets.reg_name }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
-        sed -i.bak 's/<image-name>/${{ inputs.image-name }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
-        sed -i.bak 's/<image-tag>/${{ inputs.image-tag }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
+        sed -i.bak 's/<image-and-tag>/${{ inputs.image-and-tag }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
+        #sed -i.bak 's/<image-name>/${{ inputs.image-name }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
+        #sed -i.bak 's/<image-tag>/${{ inputs.image-tag }}/' deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml 
         cat deploy.${GITHUB_REF#refs/heads/}.${{ github.run_number }}.yml
         git config --global user.name "github-actions[bot]"
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -83,7 +88,8 @@ jobs:
         manifests: |
           ${{ github.workspace }}/deployments/${{steps.create-file.outputs.filename}}
         images: |
-          ${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:${{ inputs.image-tag }}
+          ${{ secrets.reg_name }}/${{ inputs.image-and-tag }}
+          #${{ secrets.reg_name }}/${{ inputs.image-name }}-${GITHUB_REF#refs/heads/}:${{ inputs.image-tag }}
         #imagepullsecrets: |
         #  ${{ secrets.reg_secret }}
         namespace: ${{ inputs.namespace }}
